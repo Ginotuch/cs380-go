@@ -3,6 +3,7 @@ package heapqueue
 import (
 	"errors"
 	"fmt"
+	"log"
 	"reflect"
 )
 
@@ -22,18 +23,22 @@ type IntEntry struct {
 	Key      int
 }
 
-func (e IntEntry) Cmp(otherEntry interface{}) (int, error) {
+func (e IntEntry) Cmp(otherEntry interface{}) int {
 	b, ok := otherEntry.(IntEntry)
 	if !ok {
-		return 0, errors.New("unable to compare IntEntry to " + reflect.TypeOf(otherEntry).String())
+		log.Fatal(errors.New("unable to compare IntEntry to " + reflect.TypeOf(otherEntry).String()))
 	}
 	if e.Priority > b.Priority || (e.Priority == b.Priority && e.Key > b.Key) {
-		return 1, nil
+		return 1
 	}
 	if e.Priority == b.Priority && e.Key == b.Key {
-		return 0, nil
+		return 0
 	}
-	return -1, nil
+	return -1
+}
+
+func (e IntEntry) GetKey() interface{} {
+	return e.Key
 }
 
 func (e IntEntry) String() string {
