@@ -123,9 +123,11 @@ func getRandomList(t *testing.T) ([]IntEntry, int) {
 	listSize := rand.Intn(max-min+1) + min
 	var listToTest []IntEntry
 
+	ranIntList := rand.Perm(10000)
+
 	smallestInt := 1001
 	for i := 0; i < listSize; i++ {
-		num := rand.Intn(1000)
+		num := ranIntList[i]
 		listToTest = append(listToTest, IntEntry{num, num})
 		if num < smallestInt {
 			smallestInt = num
