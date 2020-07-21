@@ -1,14 +1,15 @@
 package heapqueue
 
 import (
+	"errors"
 	"fmt"
-	"log"
+	"reflect"
 )
 
 // IntEntry is an example implementation for the EntryI interface for storing
 // entries containing integer priorities and keys
 
-// Entries can
+// Entries can be retrieved like so:
 /*
 func exampleRetrieve(myHeap HeapQueue){
 	retrievedEntry := myHeap.Pop().(IntEntry)
@@ -21,18 +22,18 @@ type IntEntry struct {
 	Key      int
 }
 
-func (e IntEntry) Cmp(otherEntry interface{}) int {
+func (e IntEntry) Cmp(otherEntry interface{}) (int, error) {
 	b, ok := otherEntry.(IntEntry)
 	if !ok {
-		log.Fatal("Unable to convert otherEntry to IntEntry")
+		return 0, errors.New("unable to compare IntEntry to " + reflect.TypeOf(otherEntry).String())
 	}
 	if e.Priority > b.Priority || (e.Priority == b.Priority && e.Key > b.Key) {
-		return 1
+		return 1, nil
 	}
 	if e.Priority == b.Priority && e.Key == b.Key {
-		return 0
+		return 0, nil
 	}
-	return -1
+	return -1, nil
 }
 
 func (e IntEntry) String() string {

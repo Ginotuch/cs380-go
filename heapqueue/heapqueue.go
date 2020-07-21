@@ -1,13 +1,16 @@
 package heapqueue
 
+import "log"
+
 // The interface HeapQueue uses to handle elements in the heap.
 // Use either a pre-made implementation or write your own.
 // Look at intEntry.go for an example.
 type EntryI interface {
-	Cmp(otherEntry interface{}) int
+	Cmp(otherEntry interface{}) (int, error)
 }
 
 type HeapQueue interface {
+	Peek() (EntryI, error)
 	Pop() EntryI
 	Push(newEntry EntryI)
 	Size() int
@@ -31,14 +34,23 @@ func (q *heapqueue) Push(newEntry EntryI) {
 	q.heapifyUp(len(q.Array) - 1)
 }
 
+func (q *heapqueue) Peek() (EntryI, error) {
+	if q.Size() > 0 {
+		return q.Array[0], nil
+	}
+	return nil, ErrEmpty
+}
+
 func (q *heapqueue) swap(parentIndex int, childIndex int) bool {
 	parent := q.Array[parentIndex]
 	child := q.Array[childIndex]
 
-	if parent.Cmp(child) == 1 {
+	if cmp, err := parent.Cmp(child); err == nil && cmp == 1 {
 		q.Array[parentIndex] = child
 		q.Array[childIndex] = parent
 		return true
+	} else if err != nil {
+		log.Fatal(ErrIncompatibleTypes)
 	}
 	return false
 }
@@ -48,8 +60,12 @@ func (q *heapqueue) heapifyDown(i int) {
 		leftChildI := 2*i + 1
 		rightChildI := 2*i + 2
 		bigChildI := leftChildI
-		if rightChildI < len(q.Array) && q.Array[leftChildI].Cmp(q.Array[rightChildI]) >= 0 {
-			bigChildI = rightChildI
+		if rightChildI < len(q.Array) {
+			if cmp, err := q.Array[leftChildI].Cmp(q.Array[rightChildI]); err == nil && cmp >= 0 {
+				bigChildI = rightChildI
+			} else if err != nil {
+				log.Fatal(ErrIncompatibleTypes)
+			}
 		}
 		if !q.swap(i, bigChildI) {
 			return
@@ -76,8 +92,10 @@ func (q *heapqueue) delete(i int) EntryI {
 
 	q.Array = q.Array[:len(q.Array)-1]
 
-	if deleted.Cmp(oldLeaf) == 1 && i < len(q.Array) {
+	if cmp, err := deleted.Cmp(oldLeaf); err == nil && cmp == 1 && i < len(q.Array) {
 		q.heapifyUp(i)
+	} else if err != nil {
+		log.Fatal(ErrIncompatibleTypes)
 	} else {
 		q.heapifyDown(i)
 	}
