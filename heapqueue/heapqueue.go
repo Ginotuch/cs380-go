@@ -16,7 +16,8 @@ type HeapQueue interface {
 }
 
 type heapqueue struct {
-	array []EntryI
+	array     []EntryI
+	positions map[interface{}]int
 }
 
 func (q *heapqueue) Size() int {
@@ -29,8 +30,19 @@ func (q *heapqueue) Pop() EntryI {
 }
 
 func (q *heapqueue) Push(newEntry EntryI) {
-	q.array = append(q.array, newEntry)
-	q.heapifyUp(len(q.array) - 1)
+	if position, ok := q.positions[newEntry.GetKey()]; ok {
+		if newEntry.Cmp(q.array[position]) == 1 {
+			q.array[position] = newEntry
+			q.heapifyDown(position)
+		} else if newEntry.Cmp(q.array[position]) == -1 {
+			q.array[position] = newEntry
+			q.heapifyUp(position)
+		}
+	} else {
+		q.positions[newEntry.GetKey()] = q.Size()
+		q.array = append(q.array, newEntry)
+		q.heapifyUp(q.Size() - 1)
+	}
 }
 
 func (q *heapqueue) Peek() (EntryI, error) {
@@ -45,6 +57,9 @@ func (q *heapqueue) swap(parentIndex int, childIndex int) bool {
 	child := q.array[childIndex]
 
 	if parent.Cmp(child) == 1 {
+		q.positions[parent.GetKey()] = childIndex
+		q.positions[child.GetKey()] = parentIndex
+
 		q.array[parentIndex] = child
 		q.array[childIndex] = parent
 		return true
@@ -83,6 +98,9 @@ func (q *heapqueue) delete(i int) EntryI {
 	oldLeaf := q.array[len(q.array)-1]
 	q.array[i] = oldLeaf
 
+	q.positions[q.array[i].GetKey()] = i
+	delete(q.positions, deleted.GetKey())
+
 	q.array = q.array[:len(q.array)-1]
 
 	if deleted.Cmp(oldLeaf) == 1 && i < len(q.array) {
@@ -94,5 +112,5 @@ func (q *heapqueue) delete(i int) EntryI {
 }
 
 func SetupHeapQueue() HeapQueue {
-	return &heapqueue{}
+	return &heapqueue{positions: make(map[interface{}]int)}
 }
