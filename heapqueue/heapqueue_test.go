@@ -62,8 +62,8 @@ func TestHeapqueue_PopRandom(t *testing.T) {
 		heapInstance.Push(entry)
 	}
 	for _, entry := range sortIntEntries(t, listToTest) {
-		if heapInstance.Pop().Cmp(entry) != 0 {
-			t.Errorf("Not popped in correct order")
+		if poppedEntry := heapInstance.Pop(); poppedEntry.Cmp(entry) != 0 {
+			t.Errorf("Not popped in correct order. Expected K:%d, got K:%d", poppedEntry.GetKey(), entry.GetKey())
 			t.FailNow()
 		}
 		checkHeap(t, heapInstance)
@@ -96,7 +96,7 @@ func TestHeapqueue_PeekRandom(t *testing.T) {
 	}
 	for _, entry := range sortIntEntries(t, listToTest) {
 		if peekedEntry, _ := heapInstance.Peek(); peekedEntry.Cmp(entry) != 0 {
-			t.Errorf("Not popped in correct order")
+			t.Errorf("Not popped in correct order. Expected K:%d, got K:%d", peekedEntry.GetKey(), entry.GetKey())
 			t.FailNow()
 		}
 		heapInstance.Pop()
