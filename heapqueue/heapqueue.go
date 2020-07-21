@@ -2,7 +2,7 @@ package heapqueue
 
 // The interface HeapQueue uses to handle elements in the heap.
 // Use either a pre-made implementation or write your own.
-// Look at intEntry.go for an example.
+// Look at intentry.go for an example.
 type EntryI interface {
 	Cmp(otherEntry interface{}) int
 	GetKey() interface{}
