@@ -1,10 +1,11 @@
 package heapqueue
 
-
+// The interface HeapQueue uses to handle elements in the heap.
+// Use either a pre-made implementation or write your own.
+// Look at intEntry.go for an example.
 type EntryI interface {
 	Cmp(otherEntry interface{}) int
 }
-
 
 type HeapQueue interface {
 	Pop() EntryI
@@ -29,8 +30,6 @@ func (q *heapqueue) Push(newEntry EntryI) {
 	q.Array = append(q.Array, newEntry)
 	q.heapifyUp(len(q.Array) - 1)
 }
-
-
 
 func (q *heapqueue) swap(parentIndex int, childIndex int) bool {
 	parent := q.Array[parentIndex]
@@ -84,8 +83,6 @@ func (q *heapqueue) delete(i int) EntryI {
 	}
 	return deleted
 }
-
-
 
 func SetupHeapQueue() HeapQueue {
 	return &heapqueue{}
