@@ -24,7 +24,7 @@ type IntEntry struct {
 func (e IntEntry) Cmp(otherEntry interface{}) int {
 	b, ok := otherEntry.(IntEntry)
 	if !ok {
-		log.Fatal("Unable to convert otherEntry to ")
+		log.Fatal("Unable to convert otherEntry to IntEntry")
 	}
 	if e.Priority > b.Priority || (e.Priority == b.Priority && e.Key > b.Key) {
 		return 1
