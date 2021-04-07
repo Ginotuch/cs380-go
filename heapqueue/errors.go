@@ -1,8 +1,19 @@
 package heapqueue
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+)
 
 var (
-	ErrEmpty             = errors.New("heap is empty")
-	ErrIncompatibleTypes = errors.New("incompatible entry types exist in heap")
+	ErrorEmpty = errors.New("heap is empty")
 )
+
+type IncompatibleTypesError struct {
+	SelfType  interface{}
+	OtherType interface{}
+}
+
+func (i IncompatibleTypesError) Error() string {
+	return fmt.Sprintf("unable to compare %T type to %T", i.SelfType, i.OtherType)
+}

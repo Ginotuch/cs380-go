@@ -49,7 +49,7 @@ func (q *heapqueue) Peek() (EntryI, error) {
 	if q.Size() > 0 {
 		return q.array[0], nil
 	}
-	return nil, ErrEmpty
+	return nil, ErrorEmpty
 }
 
 func (q *heapqueue) swap(parentIndex int, childIndex int) bool {

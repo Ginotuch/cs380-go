@@ -1,10 +1,7 @@
 package heapqueue
 
 import (
-	"errors"
 	"fmt"
-	"log"
-	"reflect"
 )
 
 // IntEntry is an example implementation for the EntryI interface for storing
@@ -26,7 +23,7 @@ type IntEntry struct {
 func (e IntEntry) Cmp(otherEntry interface{}) int {
 	b, ok := otherEntry.(IntEntry)
 	if !ok {
-		log.Fatal(errors.New("unable to compare IntEntry to " + reflect.TypeOf(otherEntry).String()))
+		panic(IncompatibleTypesError{SelfType: e, OtherType: otherEntry})
 	}
 	if e.Priority > b.Priority || (e.Priority == b.Priority && e.Key > b.Key) {
 		return 1
